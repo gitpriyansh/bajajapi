@@ -24,21 +24,30 @@
     <script>
         document.getElementById('inputForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent form submission
-
+    
             const data = document.getElementById('data').value.split(',').map(Number); // Convert input to array of numbers
             const file_b64 = document.getElementById('file_b64').value;
-
-            const response = await fetch('/.netlify/functions/backend', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ data, file_b64 }),
-            });
-
-            const result = await response.json();
-            document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+    
+            try {
+                const response = await fetch('/.netlify/functions/backend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ data, file_b64 }),
+                });
+    
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+    
+                const result = await response.json();
+                document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('response').textContent = `Error: ${error.message}`;
+            }
         });
     </script>
+    
 </body>
 </html>
