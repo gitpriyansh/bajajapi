@@ -1,10 +1,20 @@
 // netlify/functions/bfhl.js
 
 exports.handler = async (event) => {
+    // Set CORS headers
     const headers = {
         'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
     };
+
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers,
+            body: '',
+        };
+    }
 
     if (event.httpMethod === 'POST') {
         try {
@@ -31,13 +41,13 @@ exports.handler = async (event) => {
 
             return {
                 statusCode: 200,
-                headers: headers,
+                headers,
                 body: JSON.stringify(response),
             };
         } catch (error) {
             return {
                 statusCode: 400,
-                headers: headers,
+                headers,
                 body: JSON.stringify({ message: 'Invalid request body' }),
             };
         }
@@ -49,13 +59,13 @@ exports.handler = async (event) => {
 
         return {
             statusCode: 200,
-            headers: headers,
+            headers,
             body: JSON.stringify(response),
         };
     } else {
         return {
             statusCode: 405,
-            headers: headers,
+            headers,
             body: JSON.stringify({ message: 'Method Not Allowed' }),
         };
     }
