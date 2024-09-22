@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node server.js"
+    "build": "echo 'No build needed'",
+    "start": "netlify-lambda serve functions",
+    "deploy": "netlify deploy",
+    "test": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "@netlify/functions": "^1.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.0"
   }

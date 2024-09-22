@@ -1,14 +1,13 @@
-const { handler } = require('@netlify/functions');
+// netlify/functions/backend.js
 
-const backend = async (event) => {
-    // Check the path
-    if (event.path === '/.netlify/functions/bfhl') {
-        if (event.httpMethod === 'POST') {
+exports.handler = async (event) => {
+    if (event.httpMethod === 'POST') {
+        try {
             const { data, file_b64 } = JSON.parse(event.body);
 
             // Example validation logic for the file
             const file_valid = Boolean(file_b64);
-            const file_mime_type = 'doc/pdf'; // Static example
+            const file_mime_type = 'doc/pdf'; // Static example; consider implementing actual MIME type detection
             const file_size_kb = Buffer.from(file_b64, 'base64').length / 1024; // Approximate size calculation
 
             // Prepare response
@@ -29,23 +28,26 @@ const backend = async (event) => {
                 statusCode: 200,
                 body: JSON.stringify(response),
             };
-        } else if (event.httpMethod === 'GET') {
-            // Prepare hardcoded response for the GET request
-            const response = {
-                operation_code: 1
-            };
-
+        } catch (error) {
             return {
-                statusCode: 200,
-                body: JSON.stringify(response),
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Invalid request body' }),
             };
         }
+    } else if (event.httpMethod === 'GET') {
+        // Prepare hardcoded response for the GET request
+        const response = {
+            operation_code: 1
+        };
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(response),
+        };
+    } else {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ message: 'Method Not Allowed' }),
+        };
     }
-
-    return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Not Found' }),
-    };
 };
-
-exports.handler = backend;
