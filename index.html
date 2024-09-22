@@ -18,29 +18,46 @@
         <button type="submit">Submit</button>
     </form>
 
+    <button id="getRequestButton">Get Operation Code</button>
+
     <h2>Response:</h2>
     <pre id="response"></pre>
 
     <script>
         document.getElementById('inputForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent form submission
-    
+
             const data = document.getElementById('data').value.split(',').map(Number); // Convert input to array of numbers
             const file_b64 = document.getElementById('file_b64').value;
-    
+
             try {
-                const response = await fetch('/.netlify/functions/index', {
+                const response = await fetch('/.netlify/functions/backend', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ data, file_b64 }),
                 });
-    
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-    
+
+                const result = await response.json();
+                document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('response').textContent = `Error: ${error.message}`;
+            }
+        });
+
+        document.getElementById('getRequestButton').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/.netlify/functions/backend');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const result = await response.json();
                 document.getElementById('response').textContent = JSON.stringify(result, null, 2);
             } catch (error) {
@@ -48,6 +65,5 @@
             }
         });
     </script>
-    
 </body>
 </html>
