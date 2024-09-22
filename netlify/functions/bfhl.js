@@ -1,6 +1,11 @@
-// netlify/functions/backend.js
+// netlify/functions/bfhl.js
 
 exports.handler = async (event) => {
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+    };
+
     if (event.httpMethod === 'POST') {
         try {
             const { data, file_b64 } = JSON.parse(event.body);
@@ -21,32 +26,36 @@ exports.handler = async (event) => {
                 highest_lowercase_alphabet: [],
                 file_valid: file_valid,
                 file_mime_type: file_mime_type,
-                file_size_kb: Math.round(file_size_kb).toString() // Round to nearest whole number
+                file_size_kb: Math.round(file_size_kb).toString(), // Round to nearest whole number
             };
 
             return {
                 statusCode: 200,
+                headers: headers,
                 body: JSON.stringify(response),
             };
         } catch (error) {
             return {
                 statusCode: 400,
+                headers: headers,
                 body: JSON.stringify({ message: 'Invalid request body' }),
             };
         }
     } else if (event.httpMethod === 'GET') {
         // Prepare hardcoded response for the GET request
         const response = {
-            operation_code: 1
+            operation_code: 1,
         };
 
         return {
             statusCode: 200,
+            headers: headers,
             body: JSON.stringify(response),
         };
     } else {
         return {
             statusCode: 405,
+            headers: headers,
             body: JSON.stringify({ message: 'Method Not Allowed' }),
         };
     }
