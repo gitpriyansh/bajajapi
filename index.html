@@ -29,7 +29,7 @@
             const file_b64 = document.getElementById('file_b64').value;
     
             try {
-                const response = await fetch('/.netlify/functions/backend', {
+                const response = await fetch('/.netlify/functions/index', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
